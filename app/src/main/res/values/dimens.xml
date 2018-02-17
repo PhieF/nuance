@@ -1,0 +1,12 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="browser_item_height">30dip</dimen>
+    <dimen name="content_list_space_between_thumbnail_and_name">5dip</dimen>
+    <dimen name="video_list_thumbnail_margin_bottom">5dip</dimen>
+    <dimen name="video_list_thumbnail_margin_left">5dip</dimen>
+
+    <dimen name="video_list_thumbnail_margin_top">5dip</dimen>
+
+</resources>

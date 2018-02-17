@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dip"
+    android:orientation="vertical"
+    android:background="@drawable/button_selector_holo_dark"
+    android:paddingLeft="15dip"
+    >
+
+
+
+    <ImageView
+        android:layout_width="30dip"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/play"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        />
+    <ImageView
+        android:layout_width="30dip"
+        android:layout_height="match_parent"
+        android:id="@+id/plus"
+        android:src="@drawable/plus"
+        android:padding="5dip"
+        android:clickable="true"
+        android:background="@drawable/button_selector_holo_dark"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:textColor="@android:color/black"
+        android:layout_marginLeft="5dip"
+        android:gravity="center_vertical"
+        android:maxLines="3"
+        android:text="@+id/TextView01"
+        android:textStyle="bold"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/imageView"
+        android:layout_toLeftOf="@id/plus"
+        />
+
+
+
+</RelativeLayout>

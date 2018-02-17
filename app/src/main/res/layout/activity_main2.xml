@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="com.spipi.spipimediaplayer.MainActivity"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/container"
+        android:layout_height="match_parent"></FrameLayout>
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:name="com.spipi.spipimediaplayer.MediaFragment"
+        android:id="@+id/fragment2"
+        tools:layout="@layout/fragment_media" />
+
+</LinearLayout>

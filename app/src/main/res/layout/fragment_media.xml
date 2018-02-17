@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="200dip"
+    android:layout_height="60dip" tools:context="com.spipi.spipimediaplayer.MediaFragment"
+    android:visibility="visible">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ImageView
+        android:layout_width="50dip"
+        android:layout_height="wrap_content"
+        android:id="@+id/playButton"
+        android:clickable="true"
+        android:background="@drawable/button_selector_holo_dark"
+        android:paddingLeft="5dip"
+        android:layout_gravity="left|center_vertical"
+        android:src="@drawable/play" />
+    <ImageView
+        android:layout_width="50dip"
+        android:layout_height="wrap_content"
+        android:id="@+id/previousButton"
+        android:clickable="true"
+        android:background="@drawable/button_selector_holo_dark"
+        android:paddingLeft="5dip"
+        android:layout_gravity="left|center_vertical"
+        android:src="@drawable/previous"
+        android:layout_alignTop="@+id/nextButton"
+        android:layout_toRightOf="@+id/playButton"
+        android:layout_toEndOf="@+id/playButton" />
+    <ImageView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/menuButton"
+        android:background="@drawable/button_selector_holo_dark"
+        android:clickable="true"
+        android:padding="5dip"
+        android:layout_gravity="left|center_vertical"
+        android:src="@android:drawable/ic_menu_more"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+    <ImageView
+        android:layout_width="50dip"
+        android:layout_height="wrap_content"
+        android:id="@+id/nextButton"
+        android:background="@drawable/button_selector_holo_dark"
+        android:clickable="true"
+        android:paddingLeft="5dip"
+        android:layout_gravity="left|center_vertical"
+        android:src="@drawable/next"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/menuButton"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/button_selector_holo_dark"
+        android:clickable="true"
+        android:id="@+id/launchPlayerButton"
+        android:layout_toRightOf="@id/previousButton"
+        android:layout_toLeftOf="@id/nextButton"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hello_blank_fragment"
+            android:id="@+id/title"
+            android:layout_gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+    </FrameLayout>
+
+
+
+</RelativeLayout>

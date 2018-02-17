@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.spipi.spipimediaplayer.MainActivity">
+
+    <item android:id="@+id/action_search"
+        android:title="Search"
+        android:icon="@drawable/ic_menu_search"
+        app:showAsAction="always"
+        app:icon="@drawable/ic_menu_search"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
+
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_enable_floating_player"  android:title="@string/action_enable_floating_player"
+        android:orderInCategory="100" app:showAsAction="never"
+        android:checkable="true"/>
+    <item android:id="@+id/action_enable_low_ram" android:visible="true" android:title="@string/action_enable_low_ram"
+        android:orderInCategory="100" app:showAsAction="never"
+        android:checkable="true"/>
+    <item android:id="@+id/action_update" android:title="@string/action_update_library"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_update_deezer" android:title="@string/action_update_deezer_library"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_get_cover" android:title="@string/action_get_cover"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/action_only_local" android:title="@string/action_only_local"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/action_exit" android:title="@string/action_exit"
+        android:orderInCategory="100" app:showAsAction="never" />
+</menu>

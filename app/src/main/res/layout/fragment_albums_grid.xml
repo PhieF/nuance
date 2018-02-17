@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="com.spipi.spipimediaplayer.GenericFragment">
+
+
+
+
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="150dip"
+        android:enabled="false"
+        android:gravity="center_vertical"
+        android:maxLines="3"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:src="@null"
+        android:background="@android:color/black"
+        android:scaleType="centerCrop" />
+    <android.support.v7.widget.RecyclerView
+    android:focusable="false"
+    android:id="@+id/list"
+    android:paddingTop="150dip"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" />
+
+</FrameLayout>
