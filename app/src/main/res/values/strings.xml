@@ -39,7 +39,10 @@
    <string name="show_password">Show password</string>
     <string name="discovered">Discovered</string>
     <string name="indexed_folders">Indexed</string>
-    <string name="empty">No indexed folders.\nPlease, press the + button to add a new network folder</string>
+    <string name="empty">No indexed folders.\nPlease, press the + button to add a new indexed folder</string>
+    <string name="shortcuts_folders">Non Indexed shortcuts</string>
+    <string name="empty_shortcuts">No shortcuts.\nPlease, press the + button to add a new network folder</string>
+
     <string name="ssh_prompt">Protocol</string>
     <string-array name="ssh_types" translatable="false">
         <item>ftp://</item>

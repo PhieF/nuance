@@ -101,5 +101,16 @@ public class SmbWorkgroupShortcutAndServerAdapter extends WorkgroupShortcutAndSe
             mData.add(mContext.getString(R.string.empty));
             mTypes.add(TYPE_TEXT);
         }
+        mData.add(Integer.valueOf(R.string.indexed_folders));
+        mTypes.add(TYPE_TITLE);
+        if (mIndexedShortcuts != null&&mIndexedShortcuts.size()>0) {
+            for (ShortcutDbAdapter.Shortcut uri : mIndexedShortcuts) {
+                mData.add(uri);
+                mTypes.add(TYPE_INDEXED_SHORTCUT);
+            }
+        }else{
+            mData.add(mContext.getString(R.string.empty));
+            mTypes.add(TYPE_TEXT);
+        }
     }
 }
