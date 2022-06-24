@@ -116,11 +116,11 @@ public class MusicItem extends Item implements Comparable<MusicItem> {
     public String getPicture() {
         String albumPath = CoverUpdaterService.getAlbumPath(mArtistString, mAlbumString);
         String artistPath = CoverUpdaterService.getArtistPath(mArtistString);
-        if (mAlbum != null && mAlbum.getPicture() != null && !mAlbum.getPicture().isEmpty())
+        if (mAlbum != null && mAlbum.getPicture() != null && mAlbum.getPicture().length() != 0)
             return mAlbum.getPicture();
         else if (new File(albumPath).exists())
             return albumPath;
-        else if (mArtist != null && mArtist.getPicture() != null && !mArtist.getPicture().isEmpty())
+        else if (mArtist != null && mArtist.getPicture() != null && mArtist.getPicture().length() != 0)
             return mArtist.getPicture();
         else if (new File(artistPath).exists())
             return artistPath;

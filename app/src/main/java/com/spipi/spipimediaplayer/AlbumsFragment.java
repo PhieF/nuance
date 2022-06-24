@@ -127,7 +127,7 @@ public void  postOnCreate(View view){
     if(mArtist!=null){
         getActivity().setTitle(mArtist.getDisplayName());
         View header = getActivity().getLayoutInflater().inflate(R.layout.recycler_header, null);
-        if(mArtist.getThumbnail()!=null&&!mArtist.getPicture().isEmpty()) {
+        if(mArtist.getThumbnail()!=null&&mArtist.getPicture().length() != 0) {
             if(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("low_ram",false)){
                 BitmapFactory.Options optionsDec = new BitmapFactory.Options();
                 optionsDec.inSampleSize = 4;

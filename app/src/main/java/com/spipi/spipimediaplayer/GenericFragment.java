@@ -95,6 +95,8 @@ public abstract class GenericFragment extends Fragment implements  ItemAdapter.O
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_artists_grid, container, false);
             postOnCreate(mView);
+        } else {
+            ((ViewGroup)mView.getParent()).removeView(mView);
         }
         return mView;
     }

@@ -1,6 +1,5 @@
 package com.spipi.spipimediaplayer.mediaplayer;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -10,6 +9,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -112,7 +112,7 @@ public class MediaPlayerService extends Service implements MediaPlayerListener {
             PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
                     it,
                     0);
-            Notification.Builder notification = new Notification.Builder(getApplicationContext());
+            NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext());
             notification.setContentTitle("Spipi Music Player");
             notification.setSmallIcon(R.drawable.ic_icon);
            // notification.flags |= Notification.FLAG_ONGOING_EVENT;

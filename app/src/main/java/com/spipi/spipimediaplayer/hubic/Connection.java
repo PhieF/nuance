@@ -1,5 +1,6 @@
 package com.spipi.spipimediaplayer.hubic;
 
+import android.util.Log;
 import android.util.Pair;
 
 import org.apache.http.Header;
@@ -34,6 +35,8 @@ public class Connection {
  
 		// HTTP GET request
 		public String[] sendGetWithErrorCode(String url,List<NameValuePair> header){
+			Log.d("coverdebug"," url  "+url);
+
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpGet hg = new HttpGet(url);
 			for(int i=0; i<header.size(); i++){
@@ -44,14 +47,17 @@ public class Connection {
 
 
 		        HttpResponse response = httpclient.execute(hg);
+		        Log.d("coverdebug"," code "+response.getStatusLine().getStatusCode());
 		        String[] res =new String[2];
 		        res[0] = ""+ response.getStatusLine().getStatusCode();
 		        res[1] = inputStreamToString(response.getEntity().getContent()).toString();
 		        return res ;
 		        
 		    } catch (ClientProtocolException e) {
+		    	e.printStackTrace();
 		        // TODO Auto-generated catch block
 		    } catch (IOException e) {
+				e.printStackTrace();
 		        // TODO Auto-generated catch block
 		    }
 		    return null;

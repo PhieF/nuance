@@ -200,7 +200,7 @@ public class MyApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		registerActivityLifecycleCallbacks(AppState.sCallbackHandler);
+		/*registerActivityLifecycleCallbacks(AppState.sCallbackHandler);
 		startService(new Intent(this,LibraryUpdater.class));
 		StateService.register(this);
 		NetworkCredentialsDatabase.getInstance().loadCredentials(this);
@@ -211,7 +211,7 @@ public class MyApplication extends Application {
 			}
 		};
 		AppState.addOnForeGroundListener(sListener);
-		AppState.addOnForeGroundListener(FloatingService.listener);
+		AppState.addOnForeGroundListener(FloatingService.listener);*/
 
 	}
 }

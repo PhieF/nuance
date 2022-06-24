@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
             ft.addToBackStack(null);
         searchFragment = null;
         ft.commitAllowingStateLoss();
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
         menu.findItem(R.id.action_enable_low_ram).setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("low_ram",false));
         menu.findItem(R.id.action_only_local).setCheckable(true).setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("only_local_pref", false));
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        /*final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         // Assumes current activity is the searchable activity
         int searchImgId = android.support.v7.appcompat.R.id.search_button; // I used the explicit layout ID of searchview's ImageView
         ImageView v = (ImageView) searchView.findViewById(searchImgId);
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
-        });
+        });*/
 
 
         return true;
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
     @Override
     public void onBackPressed(){
         if(getSupportFragmentManager().getBackStackEntryCount()>0){
+
             getSupportFragmentManager().popBackStackImmediate();
             searchFragment=null;
         }

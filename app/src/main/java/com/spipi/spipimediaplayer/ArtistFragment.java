@@ -106,6 +106,7 @@ public class ArtistFragment extends GenericFragment implements hubicLibraryUpdat
     public void onDetach(){
         super.onDetach();
 
+
     }
 
     @Override

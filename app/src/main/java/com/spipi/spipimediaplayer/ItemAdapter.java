@@ -233,7 +233,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             return;
         }
         ((MyViewHolder)viewHolder).setText(mList.get(i).getDisplayName());
-        if (mList.get(i).getThumbnail() != null && !mList.get(i).getThumbnail().isEmpty()) {
+        if (mList.get(i).getThumbnail() != null && mList.get(i).getThumbnail().length() != 0) {
 
             Bitmap myBitmap;
             if(PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean("low_ram",false)){

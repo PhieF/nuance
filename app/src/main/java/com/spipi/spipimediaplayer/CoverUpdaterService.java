@@ -1,6 +1,5 @@
 package com.spipi.spipimediaplayer;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -9,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 
 import com.spipi.spipimediaplayer.database.MusicDatasource;
 import com.spipi.spipimediaplayer.hubic.Connection;
@@ -75,7 +75,7 @@ public class CoverUpdaterService extends Service {
             PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
                     it,
                     0);
-            Notification.Builder notification = new Notification.Builder(getApplicationContext());
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext());
             notification.setContentTitle("Spipi Music Player");
             notification.setSmallIcon(R.drawable.ic_icon);
             //notification.flags |= Notification.FLAG_ONGOING_EVENT;
@@ -86,7 +86,7 @@ public class CoverUpdaterService extends Service {
             startForeground(5, notification.getNotification());
 
     }
-    List<UpdateListener>mListeners;
+    List<UpdateListener>mListeners = new ArrayList<>();
 
     public static String getArtistPath(String artist) {
         return Environment.getExternalStorageDirectory()+"/hubicmusic/"+artist+".jpg";
@@ -131,7 +131,7 @@ public class CoverUpdaterService extends Service {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                String res= conn.sendGet("https://api.deezer.com/search/artist/?q="+query+"&index=0&limit=1&output=json", new ArrayList<NameValuePair>());
+                String res= conn.sendGet("http://api.deezer.com/search/artist/?q="+query+"&index=0&limit=1&output=json", new ArrayList<NameValuePair>());
                 JSONObject object = new JSONObject(res);
                 if(!object.getJSONArray("data").isNull(0)){
                     String urlPicture= object.getJSONArray("data").getJSONObject(0).get("picture").toString();
@@ -182,7 +182,7 @@ public class CoverUpdaterService extends Service {
                     e.printStackTrace();
                 }
 
-                String res= conn.sendGet("https://api.deezer.com/search/album/?q="+query+"&index=0&limit=1&output=json", new ArrayList<NameValuePair>());
+                String res= conn.sendGet("http://api.deezer.com/search/album/?q="+query+"&index=0&limit=1&output=json", new ArrayList<NameValuePair>());
                 JSONObject object = new JSONObject(res);
                 if(!object.getJSONArray("data").isNull(0)){
                     String urlPicture= object.getJSONArray("data").getJSONObject(0).get("cover").toString();

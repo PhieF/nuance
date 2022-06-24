@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabaseLockedException;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -96,7 +95,7 @@ public class MusicDatasource {
                 else
                     thumbnail = picture;
                 ArtistItem artist = new ArtistItem(cursor.getString(1), thumbnail,picture, cursor.getLong(0));
-                if (!notLike.isEmpty())
+                if (notLike.length() != 0)
                     notLike += ", ";
                 else
                     notLike += "LOWER("+SQLiteHelper.COLUMN_ARTIST+ " )NOT IN (";
@@ -106,7 +105,7 @@ public class MusicDatasource {
                 cursor.moveToNext();
                 i++;
             }
-            if(!notLike.isEmpty())
+            if(notLike.length() != 0)
                 notLike+=")";
         }
         cursor.close();
@@ -171,7 +170,7 @@ public class MusicDatasource {
             while (!cursor2.isAfterLast()) {
                 String thumbnail = null;
                 String picture = null;
-                if (cursor2.getString(3) != null && !cursor2.getString(3).isEmpty()) {
+                if (cursor2.getString(3) != null && cursor2.getString(3).length() != 0) {
                     thumbnail = cursor2.getString(3);
                     picture = thumbnail;
                 }
@@ -196,7 +195,7 @@ public class MusicDatasource {
 
                 }
                 else {
-                    if(!notLike.isEmpty())
+                    if(notLike.length() != 0)
                         notLike+=" AND ";
                     notLike += SQLiteHelper.COLUMN_ALBUM + " NOT IN (";
                     hasSet=true;
@@ -219,7 +218,7 @@ public class MusicDatasource {
         }
         if(!hideRemote) {
             open();
-            cursor2 = database.rawQuery("SELECT DISTINCT(" + SQLiteHelper.COLUMN_ALBUM + "), " + SQLiteHelper.COLUMN_ARTIST + " FROM " + SQLiteHelper.TABLE_MUSIC + (notLike != null && !notLike.isEmpty() ? " WHERE "+notLike : ""), artistsArgs);
+            cursor2 = database.rawQuery("SELECT DISTINCT(" + SQLiteHelper.COLUMN_ALBUM + "), " + SQLiteHelper.COLUMN_ARTIST + " FROM " + SQLiteHelper.TABLE_MUSIC + (notLike != null && notLike.length() != 0 ? " WHERE "+notLike : ""), artistsArgs);
 
             cursor2.moveToFirst();
             while (!cursor2.isAfterLast()) {
@@ -261,12 +260,12 @@ public class MusicDatasource {
             builder.appendPath("albums");
             uri = builder.build();
             grabLocal = true;
-            if(artist.getName()!=null&&!artist.getName().isEmpty()){
+            if(artist.getName()!=null&&artist.getName().length()!=0){
                 notLike += SQLiteHelper.COLUMN_ARTIST+" = ?";
                 tab = new String[]{artist.getName()};
             }
 
-        }else if(artist!=null&&artist.getName()!=null&&!artist.getName().isEmpty()){
+        }else if(artist!=null&&artist.getName()!=null&&artist.getName().length()!=0){
             notLike += SQLiteHelper.COLUMN_ARTIST+" = ?";
             tab = new String[]{artist.getName()};
         }
@@ -295,7 +294,7 @@ public class MusicDatasource {
                 while (!cursor2.isAfterLast()) {
                     String thumbnail = null;
                     String picture = null;
-                    if (cursor2.getString(3) != null && !cursor2.getString(3).isEmpty()) {
+                    if (cursor2.getString(3) != null && cursor2.getString(3).length() != 0) {
                         thumbnail = cursor2.getString(3);
                         picture = thumbnail;
                     } else {
@@ -319,7 +318,7 @@ public class MusicDatasource {
                         notLike += ", ";
 
                     } else {
-                        if (!notLike.isEmpty())
+                        if (notLike.length() != 0)
                             notLike += " AND ";
                         notLike += SQLiteHelper.COLUMN_ALBUM + " NOT IN (";
                         hasSet = true;
@@ -330,7 +329,7 @@ public class MusicDatasource {
                     cursor2.moveToNext();
                     i++;
                 }
-                if (!notLike.isEmpty())
+                if (notLike.length() != 0)
                     notLike += ")";
                 cursor2.close();
             }
@@ -347,7 +346,7 @@ public class MusicDatasource {
         }
         if(!hideRemote) {
             open();
-            cursor2 = database.rawQuery("SELECT DISTINCT(" + SQLiteHelper.COLUMN_ALBUM + "), " + SQLiteHelper.COLUMN_ARTIST + " FROM " + SQLiteHelper.TABLE_MUSIC + (notLike != null && !notLike.isEmpty() ? " WHERE " + buildWhere(notLike) : buildWhere(null)), artistsArgs);
+            cursor2 = database.rawQuery("SELECT DISTINCT(" + SQLiteHelper.COLUMN_ALBUM + "), " + SQLiteHelper.COLUMN_ARTIST + " FROM " + SQLiteHelper.TABLE_MUSIC + (notLike != null && notLike.length() != 0 ? " WHERE " + buildWhere(notLike) : buildWhere(null)), artistsArgs);
 
             cursor2.moveToFirst();
             while (!cursor2.isAfterLast()) {
@@ -408,7 +407,7 @@ public class MusicDatasource {
                 while (!cursor3.isAfterLast()) {
                     MusicItem comment = new MusicItem(cursor3.getString(0),null, null, cursor3.getString(1), cursor3.getInt(2), 0);
                     comments.add(comment);
-                    if(whereBisArray.get(currentWhere).isEmpty()){
+                    if(whereBisArray.get(currentWhere).length() == 0){
                         whereBisArray.set(currentWhere, " WHERE ");
                     }
                     else if(first){
@@ -501,7 +500,7 @@ public class MusicDatasource {
                 where = Media.ARTIST_ID + " = ?";
                 whereArgs = new String[]{artist.getId() + ""};
             }
-            if(whereBis.isEmpty()){
+            if(whereBis.length() == 0){
                 whereBis = " WHERE ";
             }
             else {
@@ -526,7 +525,7 @@ public class MusicDatasource {
                 while (!cursor3.isAfterLast()) {
                     MusicItem comment = new MusicItem(cursor3.getString(0),artist, album, cursor3.getString(1), cursor3.getInt(2), 0);
                     comments.add(comment);
-                    if(whereBisArray.get(currentWhere).isEmpty()){
+                    if(whereBisArray.get(currentWhere).length() == 0){
                         whereBisArray.set(currentWhere, " WHERE ");
                     }
                     else if(first){
@@ -668,7 +667,7 @@ public class MusicDatasource {
         try{
             long insertId = database.insertWithOnConflict(SQLiteHelper.TABLE_MUSIC, null,
                     values,database.CONFLICT_REPLACE);
-        }catch(SQLiteDatabaseLockedException e){
+        }catch(Exception e){
             try {
                 Thread.sleep(200);
                 addMusic(id, path, artist, album, title, track);
@@ -712,7 +711,7 @@ public class MusicDatasource {
                 else
                     thumbnail = picture;
                 ArtistItem artist = new ArtistItem(cursor.getString(1), thumbnail,picture, cursor.getLong(0));
-                if (!notLike.isEmpty())
+                if (notLike.length() != 0)
                     notLike += ", ";
                 else
                     notLike += SQLiteHelper.COLUMN_ARTIST+ " NOT IN (";
@@ -722,7 +721,7 @@ public class MusicDatasource {
                 cursor.moveToNext();
                 i++;
             }
-            if(!notLike.isEmpty())
+            if(notLike.length() != 0)
                 notLike+=")";
         }
         cursor.close();
@@ -784,7 +783,7 @@ public class MusicDatasource {
             long insertId = database.insertWithOnConflict(SQLiteHelper.TABLE_PLAYLIST, null,
                     values,database.CONFLICT_REPLACE);
             return insertId;
-        }catch(SQLiteDatabaseLockedException e){
+        }catch(Exception e){
             try {
                 Thread.sleep(200);
                 addPlaylist(name, type);
@@ -804,7 +803,7 @@ public class MusicDatasource {
         try{
              database.insertWithOnConflict(SQLiteHelper.TABLE_PLAYLIST_MUSIC, null,
                      values, database.CONFLICT_REPLACE);
-        }catch(SQLiteDatabaseLockedException e){
+        }catch(Exception e){
             try {
                 Thread.sleep(200);
                 addToPlaylist(accessID, path, playlistID);
@@ -824,7 +823,7 @@ public class MusicDatasource {
         try {
             database.delete(SQLiteHelper.TABLE_PLAYLIST_MUSIC, where,
                     values);
-        } catch (SQLiteDatabaseLockedException e) {
+        } catch (Exception e) {
             try {
                 Thread.sleep(200);
                 removeFromPlaylist(accessID, path, playlistID);
@@ -876,7 +875,7 @@ public class MusicDatasource {
             String path = cursor.getString(pathColumn);
 
             if(access>0){ //hubic
-                if(!distantQuery.isEmpty())
+                if(distantQuery.length() > 0)
                     distantQuery+=" OR ";
                 distantQuery+=" "+SQLiteHelper.COLUMN_ACCESS_ID+"= ? AND "+SQLiteHelper.COLUMN_PATH+"= ?";
                 distant.add(access+"");
@@ -885,7 +884,7 @@ public class MusicDatasource {
             }
             else if(access == -MediaPlayerFactory.TYPE_DEEZER||access == -MediaPlayerFactory.TYPE_NEW){
 
-                if(!distantQuery.isEmpty())
+                if(distantQuery.length() != 0)
                     distantQuery+=" OR ";
                 distantQuery+=" "+SQLiteHelper.COLUMN_ACCESS_ID+"= ? AND "+SQLiteHelper.COLUMN_PATH+"= ?";
                 distant.add(access+"");
@@ -895,7 +894,7 @@ public class MusicDatasource {
 
             }
             else if(access == - MediaPlayerFactory.TYPE_LOCAL){
-                if(!localQuery.isEmpty())
+                if(localQuery.length() != 0)
                     localQuery+=" OR ";
                 localQuery+=" "+Media.DATA+"= ?";
                 local.add(path);
@@ -910,7 +909,7 @@ public class MusicDatasource {
 
         ArrayList<MusicItem> toReturn = new ArrayList<>();
         HashMap<String,MusicItem> tmp = new HashMap<>();
-        if(!localQuery.isEmpty()) {
+        if(localQuery.length() != 0) {
             String[] projection = new String[]{Media.DATA, Media.TITLE, Media.TRACK, Media.ARTIST, Media.ALBUM};
             ContentResolver contentResolver = context.getContentResolver();
             Cursor cursor3 = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, localQuery, local.toArray(new String[]{})
@@ -930,7 +929,7 @@ public class MusicDatasource {
 
         }
 
-        if(!distantQuery.isEmpty()) {
+        if(distantQuery.length() != 0) {
             Cursor cursor3 = database.rawQuery("SELECT DISTINCT(" + SQLiteHelper.COLUMN_MUSIC + "), " + SQLiteHelper.COLUMN_TRACK + ", "+ SQLiteHelper.COLUMN_ARTIST + ", "+ SQLiteHelper.COLUMN_ALBUM + ", " + SQLiteHelper.COLUMN_PATH + ", " + SQLiteHelper.COLUMN_ACCESS_ID + " FROM " +
                     SQLiteHelper.TABLE_MUSIC + " WHERE "+buildWhere(distantQuery),distant.toArray(new String[]{}));
 
@@ -960,7 +959,7 @@ public class MusicDatasource {
     private String buildWhere(String localQuery) {
 
 
-        if(localQuery==null||localQuery.isEmpty()){
+        if(localQuery==null||localQuery.length()==0){
             return SQLiteHelper.COLUMN_AVAILABILITY +" = 1";
         }
         String whereString = SQLiteHelper.COLUMN_AVAILABILITY +" = 1";

@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.spipi.spipimediaplayer"
-        minSdkVersion 14
+        minSdkVersion 8
         targetSdkVersion 27
         versionCode 33
         versionName "2.26"
@@ -21,10 +21,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    compile 'com.android.support:support-v4:27.0.2'
-    compile 'com.android.support:support-v13:27.0.2'
-    compile files('src/main/libs/deezer-sdk.jar')
-    compile 'com.android.support:recyclerview-v7:27.0.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:23.2.1'
+    implementation 'com.android.support:support-v4:23.2.1'
+    implementation files('src/main/libs/deezer-sdk.jar')
+    implementation 'com.android.support:recyclerview-v7:23.2.1'
 }
