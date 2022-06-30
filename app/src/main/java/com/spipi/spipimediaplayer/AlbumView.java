@@ -20,6 +20,7 @@ import com.spipi.spipimediaplayer.database.MusicDatasource;
 import com.spipi.spipimediaplayer.mediaplayer.MediaPlayerFactory;
 import com.spipi.spipimediaplayer.mediaplayer.MediaPlayerService;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class AlbumView extends LinearLayout implements View.OnClickListener, MyA
 
     @Override
     public void onClick(View view) {
+
         if(findViewById(R.id.music_container).getVisibility() == View.GONE)
             displayMusicList();
         else
@@ -169,7 +171,7 @@ public class AlbumView extends LinearLayout implements View.OnClickListener, MyA
                 }
                 else {
                     mMusics = (List<MusicItem>) mMusicDatasource.getAllMusicsFromPlaylist((PlaylistItem) mAlbumItem, PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("only_local_pref", false));
-
+                    Collections.reverse(mMusics);
                 }
 
                 isLoaded=true;

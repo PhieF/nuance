@@ -523,8 +523,9 @@ public class MusicDatasource {
                 ArrayList<String>currentArrayArg = new ArrayList<>();
                 currentArrayArg.addAll(whereArgsBis);
                 while (!cursor3.isAfterLast()) {
-                    MusicItem comment = new MusicItem(cursor3.getString(0),artist, album, cursor3.getString(1), cursor3.getInt(2), 0);
-                    comments.add(comment);
+                    MusicItem music = new MusicItem(cursor3.getString(0),artist, album, cursor3.getString(1), cursor3.getInt(2), 0);
+                    comments.add(music);
+                    Log.d("musicdebug","music "+music.getPath());
                     if(whereBisArray.get(currentWhere).length() == 0){
                         whereBisArray.set(currentWhere, " WHERE ");
                     }
@@ -879,20 +880,14 @@ public class MusicDatasource {
     }
 
     public List<MusicItem> getAllMusicsFromPlaylist(PlaylistItem playlistItem, boolean only_local_pref) {
-        Log.d("PlayListDebug","getAllMusicsFromPlaylist");
 
         String [] where = new String[]{playlistItem.getId()+""};
         List<MusicItem> mis = new ArrayList<>();
-        Log.d("PlayListDebug","getAllMusicsFromPlaylist open");
-
         open();
-        Log.d("PlayListDebug","getAllMusicsFromPlaylist opened");
-
         Cursor cursor = database.rawQuery("SELECT * FROM " + SQLiteHelper.TABLE_PLAYLIST_MUSIC+" WHERE "+SQLiteHelper.COLUMN_PLAYLIST_ID+"=? ", where);
-        Log.d("PlayListDebug","getAllMusicsFromPlaylist raw");
 
-        List<PlaylistItem> list = new ArrayList<>();
         cursor.moveToFirst();
+
         int accessColumn = cursor.getColumnIndex(SQLiteHelper.COLUMN_ACCESS_ID);
         int pathColumn = cursor.getColumnIndex(SQLiteHelper.COLUMN_PLAYLIST_MUSIC_PATH);
         ArrayList <String> local = new ArrayList<>();
@@ -903,7 +898,6 @@ public class MusicDatasource {
         while (!cursor.isAfterLast()) {
             int access = cursor.getInt(accessColumn);
             String path = cursor.getString(pathColumn);
-
             if(access>0){ //hubic
                 if(distantQuery.length() > 0)
                     distantQuery+=" OR ";
@@ -931,9 +925,9 @@ public class MusicDatasource {
                 ordered.add("local://" + access + "/" + path);
 
             }
-            PlaylistItem artist = new PlaylistItem(cursor.getString(1), null, null, cursor.getLong(0), Uri.parse(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_URI))));
-            list.add(artist);
+
             cursor.moveToNext();
+
         }
         cursor.close();
 
@@ -945,6 +939,7 @@ public class MusicDatasource {
             Cursor cursor3 = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, localQuery, local.toArray(new String[]{})
                     , MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
             cursor3.moveToFirst();
+
             if (cursor3.getCount() > 0) {
                 while (!cursor3.isAfterLast()) {
 
@@ -970,11 +965,11 @@ public class MusicDatasource {
                    // MusicItem albumItem = new MusicItem("distant://" + cursor3.getLong(3) + "/" + cursor3.getString(2), null, null, cursor3.getString(0), cursor3.getInt(1), cursor3.getLong(3) > 0 ? MediaPlayerFactory.TYPE_HUBIC : MediaPlayerFactory.TYPE_DEEZER,1);
                     tmp.put(albumItem.getPath(),albumItem);
 
-                    Log.d("musicdebug", albumItem.getPath() );
                     cursor3.moveToNext();
                 }
             }
             cursor3.close();
+
 
         }
         //ordering

@@ -1,21 +1,30 @@
 package com.spipi.spipimediaplayer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.spipi.spipimediaplayer.database.MusicDatasource;
 import com.spipi.spipimediaplayer.mediaplayer.MediaPlayerService;
+import com.spipi.spipimediaplayer.playlists.PlayList;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,43 +35,85 @@ import java.util.List;
  * <p/>
  * interface.
  */
-public class PlaylistFragment extends GenericFragment implements MyApplication.Mp3ServiceBindListener, AlbumView.OnMusicClickListener {
+public class PlaylistsFragment extends GenericFragment implements MyApplication.Mp3ServiceBindListener, AlbumView.OnMusicClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    public static final String ARG_PLAYLIST = "param1";
 
     // TODO: Rename and change types of parameters
-    private PlaylistItem mPlaylist;
-    private ArrayList<MusicItem> mMusics;
+    private ArtistItem mArtist;
+    private ArrayList<Item> mAlbums;
     private ArrayList<Item> mItems;
     private ArrayList<ArrayList<MusicItem>> mMusicsToSave;
     private MediaPlayerService mMediaPlayerService;
     private Drawable mDrawable;
     private Bitmap myBitmap;
-    private AsyncTask<Void, Void, Void> mTask;
+    private MenuItem mNewPlaylist;
 
 
     // TODO: Rename and change types of parameters
-    public static PlaylistFragment newInstance(PlaylistItem playlist) {
-        PlaylistFragment fragment = new PlaylistFragment();
+    public static PlaylistsFragment newInstance() {
+        PlaylistsFragment fragment = new PlaylistsFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PLAYLIST, playlist);
         fragment.setArguments(args);
         return fragment;
     }
     @Override
     public void onCreate(Bundle save){
-        mPlaylist = (PlaylistItem)getArguments().getSerializable(ARG_PLAYLIST);
         mMusicsToSave = new ArrayList<>();
-        mMusics = new ArrayList<>();
+        mAlbums = new ArrayList<>();
         mDrawable = getResources().getDrawable(R.drawable.white);
-
+        setHasOptionsMenu(true);
 
         super.onCreate(save);
 
 
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        mNewPlaylist = menu.add(R.string.add_playlist);
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d("reloaddebug", "onResume");
+        getActivity().sendBroadcast(new Intent("ReloadAllPlaylists"));
+    }
+    private void newPlaylist(){
+        AlertDialog.Builder builder= new AlertDialog.Builder(getActivity());
+        final EditText tv = new EditText(getActivity());
+        builder.setTitle(R.string.add_playlist)
+                .setView(tv)
+                .setPositiveButton("create", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MusicDatasource md = new MusicDatasource(getActivity());
+                        md.open();
+                        md.addPlaylist(tv.getText().toString(), PlayList.TYPE_LOCAL, null);
+                        md.close();
+                        setItemList();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .create().show();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        //noinspection SimplifiableIfStatement
+        if (mNewPlaylist == item) {
+
+            return true;
+        }
+    return false;
     }
     @Override
     public void onAttach(Activity activity){
@@ -74,8 +125,6 @@ public class PlaylistFragment extends GenericFragment implements MyApplication.M
     @Override
     public void onDetach(){
         super.onDetach();
-        if(mTask!=null)
-            mTask.cancel(true);
 
     }
     @Override
@@ -84,7 +133,7 @@ public class PlaylistFragment extends GenericFragment implements MyApplication.M
         if(myBitmap!=null)
         myBitmap.recycle();
         myBitmap = null;
-        mMusics = null;
+        mAlbums = null;
     }
     @Override
     public void onSaveInstanceState(Bundle save){
@@ -94,7 +143,7 @@ public class PlaylistFragment extends GenericFragment implements MyApplication.M
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public PlaylistFragment() {
+    public PlaylistsFragment() {
     }
     public void OnScrollChanged(int l, int t, int oldl, int oldt) {
         // Code ...
@@ -122,17 +171,17 @@ public class PlaylistFragment extends GenericFragment implements MyApplication.M
 @Override
 public void  postOnCreate(View view){
     super.postOnCreate(view);
-    if(mPlaylist !=null){
-        getActivity().setTitle(mPlaylist.getDisplayName());
+    if(mArtist!=null){
+        getActivity().setTitle(mArtist.getDisplayName());
         View header = getActivity().getLayoutInflater().inflate(R.layout.recycler_header, null);
-        if(mPlaylist.getThumbnail()!=null&& mPlaylist.getPicture().length() != 0) {
+        if(mArtist.getThumbnail()!=null&&!mArtist.getPicture().isEmpty()) {
             if(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("low_ram",false)){
                 BitmapFactory.Options optionsDec = new BitmapFactory.Options();
                 optionsDec.inSampleSize = 4;
-                myBitmap = BitmapFactory.decodeFile(mPlaylist.getPicture(), optionsDec);
+                myBitmap = BitmapFactory.decodeFile(mArtist.getPicture(), optionsDec);
             }
             else
-             myBitmap = BitmapFactory.decodeFile(mPlaylist.getPicture());
+             myBitmap = BitmapFactory.decodeFile(mArtist.getPicture());
             ((ImageView) header.findViewById(R.id.image)).setImageBitmap(myBitmap);
         }else{
             ((ImageView) header.findViewById(R.id.image)).setImageResource(R.drawable.unknown_artist);
@@ -149,16 +198,18 @@ public void  postOnCreate(View view){
     }
     @Override
 public void setItemList(){
-        if(mTask!=null)
-            mTask.cancel(true);
-       mTask =  new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, Void>(){
 
             @Override
             protected Void doInBackground(Void... voids) {
-                if(getActivity()==null)
-                    return null;
-                mMusics = (ArrayList<MusicItem>) mMusicDatasource.getAllMusicsFromPlaylist(mPlaylist, PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("only_local_pref",false));
-                Collections.reverse(mMusics);
+
+                mAlbums =  new ArrayList<Item>(mMusicDatasource.getAllPlaylists(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("only_local_pref", false)));
+                mAlbums.add(new ButtonItem(getString(R.string.add_playlist), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        newPlaylist();
+                    }
+                }));
                 mItems = new ArrayList<Item>();
 
                 return null;
@@ -166,10 +217,8 @@ public void setItemList(){
             }
             @Override
         protected void onPostExecute(Void result){
-                if(mMusics==null)
-                    return;
-                mAdapter.setItemList(mMusics);
-                mAdapter.setOnMusicClickListener(PlaylistFragment.this);
+                mAdapter.setItemList(mAlbums);
+                mAdapter.setOnMusicClickListener(PlaylistsFragment.this);
                         mAdapter.notifyDataSetChanged();
             }
         }.execute();
@@ -180,14 +229,8 @@ public void setItemList(){
 
     @Override
     public void onClick(Item item) {
-        if(item instanceof MusicItem) {
-            Log.d("musicdebug",((MusicItem)item).getTitle());
-            mMediaPlayerService.setMusicList(mMusics);
-            mMediaPlayerService.setCurrent(mMusics.indexOf(item) );
-            mMediaPlayerService.prepareAndPlay();
-        }
-        else{
-
+        if(item instanceof PlaylistItem) {
+            ((MainActivity)getActivity()).setFragment(PlaylistFragment.newInstance((PlaylistItem) item));
         }
     }
 
@@ -202,6 +245,4 @@ public void setItemList(){
         mMediaPlayerService.setCurrent(position);
         mMediaPlayerService.prepareAndPlay();
     }
-
-
 }

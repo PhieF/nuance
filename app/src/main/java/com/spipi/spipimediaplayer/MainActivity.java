@@ -42,7 +42,12 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPermissionChecker = new PermissionChecker();
-        new PlaylistIndexer(this).visit();
+        new Thread(){
+            public void run(){
+                new PlaylistIndexer(MainActivity.this).visit();
+            }
+        }.start();
+
         setContentView(R.layout.activity_main2);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000ff")));
         getSupportActionBar().setStackedBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000ff")));

@@ -25,7 +25,7 @@ public class MainFragment extends TabbedFragment {
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 
-        private PlaylistFragment mPlaylistFrag;
+        private PlaylistsFragment mPlaylistFrag;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -50,7 +50,7 @@ public class MainFragment extends TabbedFragment {
             }
             else{
                 if(mPlaylistFrag == null)
-                    mPlaylistFrag =  PlaylistFragment.newInstance();
+                    mPlaylistFrag =  PlaylistsFragment.newInstance();
                 return mPlaylistFrag;
             }
 

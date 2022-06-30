@@ -95,6 +95,11 @@ public abstract class FileInfo implements Serializable , Comparable {
     public String getMimeType() {
         return "";//MimeUtils.guessMimeTypeFromExtension(getExtension());
     }
+
+    public boolean exists(){
+        return true;
+    }
+
     @Override
     public int compareTo(Object another) {
         if(another instanceof FileInfo){

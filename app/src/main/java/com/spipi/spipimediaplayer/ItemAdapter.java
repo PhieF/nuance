@@ -87,6 +87,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         private final ImageView mThumbnailView;
         private final AlbumView mAlbumView;
         private final View mPlayButton;
+        private Item mItem;
 
         public MyViewHolder(View itemView, ViewGroup viewGroup) {
             super(itemView);
@@ -98,7 +99,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 click.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mOnItemClickListener.onClick(mList.get(getAdapterPosition()));
+                        mOnItemClickListener.onClick(mItem);
                     }
                 });
             }
@@ -116,7 +117,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 itemView.findViewById(R.id.plus).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mOnItemLongClickListener.onLongClick(mList.get(getAdapterPosition()),null);
+                        mOnItemLongClickListener.onLongClick(mItem,null);
                     }
                 });
             }
@@ -156,7 +157,12 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 mAlbumView.setMusicList(musicItems);
         }
 
+        public void setItem(Item item) {
+            mItem = item;
+        }
+
         public void setAlbum(Item item,List<MusicItem> musicItem) {
+            setItem(item);
             if(mAlbumView!=null)
                 mAlbumView.setAlbum((ExpandableItem) item,musicItem);
         }
@@ -210,8 +216,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
         else if(viewType==ARTIST)
             v = mContext.getLayoutInflater().inflate(R.layout.grid_item_layout,viewGroup, false);
-        else if(viewType==ALBUM || viewType == PLAYLIST)
+        else if(viewType==ALBUM)
             v= mContext.getLayoutInflater().inflate(R.layout.layout_album_item,viewGroup, false);
+        else if(viewType == PLAYLIST)
+            v= mContext.getLayoutInflater().inflate(R.layout.layout_playlist_item,viewGroup, false);
         else
             v= mContext.getLayoutInflater().inflate(R.layout.music_item_layout,viewGroup, false);
         return new MyViewHolder(v, viewGroup);
@@ -250,11 +258,13 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             //mBitmaps.add(myBitmap);
         } else
             ((MyViewHolder)viewHolder).setThumbnail(getDefaultResource());
-        if((viewHolder.getItemViewType()== ALBUM ||viewHolder.getItemViewType()==PLAYLIST)) {
+        if(viewHolder.getItemViewType()== ALBUM ) {
             ((MyViewHolder) viewHolder).setAlbum(mList.get(i), mMusics.get(mList.get(i)));
 
 
         }
+        else
+            ((MyViewHolder) viewHolder).setItem(mList.get(i));
         if(viewHolder.getItemViewType()==MUSIC){
             ((MyViewHolder)viewHolder).setIsPlaying(mList.get(i).equals(playingMusic));
         }

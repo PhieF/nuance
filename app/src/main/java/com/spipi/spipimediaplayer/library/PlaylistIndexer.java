@@ -2,6 +2,7 @@ package com.spipi.spipimediaplayer.library;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 import com.jcraft.jsch.JSchException;
@@ -30,10 +31,11 @@ public class PlaylistIndexer {
         MusicDatasource.getInstance(mContext).open();
         mPlayLists = MusicDatasource.getInstance(mContext).getAllPlaylists(false);
         MusicDatasource.getInstance(mContext).close();
-        visit(Uri.parse("/sdcard/"));
+        visit(Uri.parse(Environment.getExternalStorageDirectory().getAbsolutePath()));
     }
 
     public void visit(Uri uri){
+        Log.d("PlayListDebug", "visit "+uri.toString());
         RawLister lister = RawListerFactory.getRawListerForUrl(uri);
         try {
             for (FileInfo info : lister.getFileList()){
@@ -60,9 +62,11 @@ public class PlaylistIndexer {
 
                         while(reader.ready()) {
                             String line = reader.readLine();
-                            Log.d("PlayListDebug", "path "+line);
-                            Uri.withAppendedPath(uri, line);
-                            MusicDatasource.getInstance(mContext).addToPlaylist(-MediaPlayerFactory.TYPE_LOCAL, info.getUri().toString(), id);
+                            Uri music = Uri.withAppendedPath(uri, line);
+                            Log.d("PlayListDebug", "path "+music.toString());
+
+                            if(FileInfoFactory.getFileInfoForUrl(music).exists())
+                                MusicDatasource.getInstance(mContext).addToPlaylist(-MediaPlayerFactory.TYPE_LOCAL, music.toString(), id);
 
                         }
                     } catch (Exception e) {

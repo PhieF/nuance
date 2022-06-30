@@ -114,6 +114,11 @@ public class LocalFileInfo extends FileInfo {
     }
 
     @Override
+    public boolean exists(){
+        return new File(mUriString).exists();
+    }
+
+    @Override
     public FileEditor getFileEditorInstance(Context ct) {
         return new SmbFileEditor(getUri());
     }
