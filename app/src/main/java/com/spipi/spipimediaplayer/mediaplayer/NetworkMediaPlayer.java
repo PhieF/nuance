@@ -4,7 +4,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 
 import com.spipi.spipimediaplayer.MusicItem;
-import com.spipi.spipimediaplayer.network.HttpProxy;
+import com.spipi.spipimediaplayer.library.HttpProxy;
 
 import java.io.IOException;
 import java.util.HashMap;

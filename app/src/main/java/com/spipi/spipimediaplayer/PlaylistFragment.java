@@ -19,15 +19,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.deezer.sdk.model.Playlist;
 import com.spipi.spipimediaplayer.database.MusicDatasource;
 import com.spipi.spipimediaplayer.mediaplayer.MediaPlayerService;
 import com.spipi.spipimediaplayer.playlists.PlayList;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -97,7 +94,7 @@ public class PlaylistFragment extends GenericFragment implements MyApplication.M
                     public void onClick(DialogInterface dialog, int which) {
                         MusicDatasource md = new MusicDatasource(getActivity());
                         md.open();
-                        md.addPlaylist(tv.getText().toString(), PlayList.TYPE_LOCAL);
+                        md.addPlaylist(tv.getText().toString(), PlayList.TYPE_LOCAL, null);
                         md.close();
                         setItemList();
                     }

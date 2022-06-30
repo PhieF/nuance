@@ -9,10 +9,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.spipi.spipimediaplayer.deezer.DeezerLibraryUpdater;
-import com.spipi.spipimediaplayer.mediaplayer.FloatingService;
 import com.spipi.spipimediaplayer.mediaplayer.MediaPlayerService;
-import com.spipi.spipimediaplayer.network.NetworkCredentialsDatabase;
-import com.spipi.spipimediaplayer.network.StateService;
 
 import java.util.ArrayList;
 import java.util.List;

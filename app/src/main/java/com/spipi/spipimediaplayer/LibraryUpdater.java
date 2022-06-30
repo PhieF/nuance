@@ -10,7 +10,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.spipi.spipimediaplayer.hubic.hubicLibraryUpdate;
-import com.spipi.spipimediaplayer.network.NetworkLibraryUpdate;
+import com.spipi.spipimediaplayer.library.NetworkLibraryUpdate;
 
 import java.util.ArrayList;
 import java.util.List;

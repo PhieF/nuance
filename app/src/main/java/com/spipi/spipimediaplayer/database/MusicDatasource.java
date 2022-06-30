@@ -774,19 +774,23 @@ public class MusicDatasource {
 
 
 
-    public long addPlaylist(String name, int type) {
+    public long addPlaylist(String name, int type, Uri uri) {
+        if(uri == null)
+            uri = Uri.parse("");
         ContentValues values = new ContentValues();
         values.put(SQLiteHelper.COLUMN_NAME, name);
         values.put(SQLiteHelper.COLUMN_TYPE, type+"");
+        values.put(SQLiteHelper.COLUMN_URI, uri.toString());
 
         try{
             long insertId = database.insertWithOnConflict(SQLiteHelper.TABLE_PLAYLIST, null,
                     values,database.CONFLICT_REPLACE);
             return insertId;
         }catch(Exception e){
+            e.printStackTrace();
             try {
                 Thread.sleep(200);
-                addPlaylist(name, type);
+                addPlaylist(name, type, null);
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
@@ -836,7 +840,7 @@ public class MusicDatasource {
     }
 
     public List<PlaylistItem> getAllPlaylists(boolean only_local_pref) {
-
+        refreshLocalPlaylists();
         open();
         Cursor cursor = database.rawQuery("SELECT * FROM " + SQLiteHelper.TABLE_PLAYLIST , null);
 
@@ -844,7 +848,7 @@ public class MusicDatasource {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
 
-                PlaylistItem artist = new PlaylistItem(cursor.getString(1), null, null, cursor.getLong(0));
+                PlaylistItem artist = new PlaylistItem(cursor.getString(1), null, null, cursor.getLong(0), Uri.parse(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_URI))));
                 list.add(artist);
                 cursor.moveToNext();
             }
@@ -855,11 +859,37 @@ public class MusicDatasource {
         return list;
     }
 
+    private void refreshLocalPlaylists() {
+
+        String[] projection = new String[]{MediaStore.Audio.PlaylistsColumns.NAME};
+        ContentResolver contentResolver = context.getContentResolver();
+        Cursor cursor = contentResolver.query(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, projection, null, null, MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER);
+        cursor.moveToFirst();
+        Log.d("PlaylistDebug", "count " + cursor.getCount());
+        if (cursor.getCount() > 0) {
+            while (!cursor.isAfterLast()) {
+
+
+                Log.d("PlaylistDebug","new playlist: "+cursor.getString(cursor.getColumnIndex(MediaStore.Audio.PlaylistsColumns.NAME)));
+                cursor.moveToNext();
+            }
+
+        }
+        cursor.close();
+    }
+
     public List<MusicItem> getAllMusicsFromPlaylist(PlaylistItem playlistItem, boolean only_local_pref) {
+        Log.d("PlayListDebug","getAllMusicsFromPlaylist");
+
         String [] where = new String[]{playlistItem.getId()+""};
         List<MusicItem> mis = new ArrayList<>();
+        Log.d("PlayListDebug","getAllMusicsFromPlaylist open");
+
         open();
+        Log.d("PlayListDebug","getAllMusicsFromPlaylist opened");
+
         Cursor cursor = database.rawQuery("SELECT * FROM " + SQLiteHelper.TABLE_PLAYLIST_MUSIC+" WHERE "+SQLiteHelper.COLUMN_PLAYLIST_ID+"=? ", where);
+        Log.d("PlayListDebug","getAllMusicsFromPlaylist raw");
 
         List<PlaylistItem> list = new ArrayList<>();
         cursor.moveToFirst();
@@ -901,7 +931,7 @@ public class MusicDatasource {
                 ordered.add("local://" + access + "/" + path);
 
             }
-            PlaylistItem artist = new PlaylistItem(cursor.getString(1), null, null, cursor.getLong(0));
+            PlaylistItem artist = new PlaylistItem(cursor.getString(1), null, null, cursor.getLong(0), Uri.parse(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_URI))));
             list.add(artist);
             cursor.moveToNext();
         }

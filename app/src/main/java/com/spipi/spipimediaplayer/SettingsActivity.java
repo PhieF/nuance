@@ -16,7 +16,7 @@ import com.spipi.spipimediaplayer.database.MusicDatasource;
 import com.spipi.spipimediaplayer.deezer.DeezerWrapper;
 import com.spipi.spipimediaplayer.hubic.AccountActivity;
 import com.spipi.spipimediaplayer.mediaplayer.MediaPlayerFactory;
-import com.spipi.spipimediaplayer.network.ui.NetworkActivity;
+import com.spipi.spipimediaplayer.library.ui.NetworkActivity;
 
 
 public class SettingsActivity extends PreferenceActivity  {

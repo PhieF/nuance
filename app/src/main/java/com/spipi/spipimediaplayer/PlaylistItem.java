@@ -1,5 +1,7 @@
 package com.spipi.spipimediaplayer;
 
+import android.net.Uri;
+
 /**
  * Created by alexandre on 26/05/15.
  */
@@ -8,12 +10,13 @@ public class PlaylistItem extends ExpandableItem implements Comparable<PlaylistI
     private final String mPicture;
     private String mName;
     private String mThumbnail;
+    private Uri mUri;
 
-    public PlaylistItem(String name, String picture, String thumbnail, long id){
+    public PlaylistItem(String name, String picture, String thumbnail, long id, Uri uri){
         mName = name;
         mThumbnail=thumbnail;
         mPicture=picture;
-
+        mUri = uri;
         mId = id;
     }
     public String getName(){
@@ -60,4 +63,7 @@ public class PlaylistItem extends ExpandableItem implements Comparable<PlaylistI
         return getName().compareTo(albumItem.getName());
     }
 
+    public Uri getUri() {
+        return mUri;
+    }
 }

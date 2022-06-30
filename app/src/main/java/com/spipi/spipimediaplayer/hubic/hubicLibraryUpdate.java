@@ -12,7 +12,7 @@ import com.spipi.spipimediaplayer.Access;
 import com.spipi.spipimediaplayer.LibraryUpdater;
 import com.spipi.spipimediaplayer.MusicItem;
 import com.spipi.spipimediaplayer.database.MusicDatasource;
-import com.spipi.spipimediaplayer.network.NetworkLibraryUpdate;
+import com.spipi.spipimediaplayer.library.NetworkLibraryUpdate;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
