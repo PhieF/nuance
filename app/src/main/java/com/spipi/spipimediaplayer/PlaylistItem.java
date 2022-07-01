@@ -8,16 +8,20 @@ import android.net.Uri;
 public class PlaylistItem extends ExpandableItem implements Comparable<PlaylistItem>{
     private final long mId;
     private final String mPicture;
+    private final int mType;
     private String mName;
     private String mThumbnail;
     private String mUri;
+    private long mModificationDate;
 
-    public PlaylistItem(String name, String picture, String thumbnail, long id, Uri uri){
+    public PlaylistItem(String name, String picture, String thumbnail, long id, Uri uri, long modificationDate, int type){
         mName = name;
         mThumbnail=thumbnail;
         mPicture=picture;
         mUri = uri.toString();
         mId = id;
+        mModificationDate = modificationDate;
+        mType = type;
     }
     public String getName(){
         return mName;
@@ -66,4 +70,17 @@ public class PlaylistItem extends ExpandableItem implements Comparable<PlaylistI
     public Uri getUri() {
         return Uri.parse(mUri);
     }
+
+    public long getModificationDate(){
+        return mModificationDate;
+    }
+
+    public void setModificationDate(long lastModified) {
+        mModificationDate= lastModified;
+    }
+
+    public int getType(){
+        return mType;
+    }
+
 }

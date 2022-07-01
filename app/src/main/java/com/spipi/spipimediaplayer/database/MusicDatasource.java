@@ -775,13 +775,14 @@ public class MusicDatasource {
 
 
 
-    public long addPlaylist(String name, int type, Uri uri) {
+    public long addPlaylist(String name, int type, Uri uri, long modificationDate) {
         if(uri == null)
             uri = Uri.parse("");
         ContentValues values = new ContentValues();
         values.put(SQLiteHelper.COLUMN_NAME, name);
         values.put(SQLiteHelper.COLUMN_TYPE, type+"");
         values.put(SQLiteHelper.COLUMN_URI, uri.toString());
+        values.put(SQLiteHelper.COLUMN_MODIFICATION_DATE, modificationDate);
 
         try{
             long insertId = database.insertWithOnConflict(SQLiteHelper.TABLE_PLAYLIST, null,
@@ -791,7 +792,7 @@ public class MusicDatasource {
             e.printStackTrace();
             try {
                 Thread.sleep(200);
-                addPlaylist(name, type, null);
+                addPlaylist(name, type, null, System.currentTimeMillis());
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
@@ -849,7 +850,7 @@ public class MusicDatasource {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
 
-                PlaylistItem artist = new PlaylistItem(cursor.getString(1), null, null, cursor.getLong(0), Uri.parse(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_URI))));
+                PlaylistItem artist = new PlaylistItem(cursor.getString(1), null, null, cursor.getLong(0), Uri.parse(cursor.getString(cursor.getColumnIndex(SQLiteHelper.COLUMN_URI))), cursor.getLong(cursor.getColumnIndex(SQLiteHelper.COLUMN_MODIFICATION_DATE)), cursor.getInt(cursor.getColumnIndex(SQLiteHelper.COLUMN_TYPE)));
                 list.add(artist);
                 cursor.moveToNext();
             }
@@ -879,12 +880,12 @@ public class MusicDatasource {
         cursor.close();
     }
 
-    public List<MusicItem> getAllMusicsFromPlaylist(PlaylistItem playlistItem, boolean only_local_pref) {
+    public List<MusicItem> getAllMusicsFromPlaylist(PlaylistItem playlistItem, boolean only_local_pref, int page, String order) {
 
         String [] where = new String[]{playlistItem.getId()+""};
         List<MusicItem> mis = new ArrayList<>();
         open();
-        Cursor cursor = database.rawQuery("SELECT * FROM " + SQLiteHelper.TABLE_PLAYLIST_MUSIC+" WHERE "+SQLiteHelper.COLUMN_PLAYLIST_ID+"=? ", where);
+        Cursor cursor = database.rawQuery("SELECT * FROM " + SQLiteHelper.TABLE_PLAYLIST_MUSIC+" WHERE "+SQLiteHelper.COLUMN_PLAYLIST_ID+"=? "+(order != null?" ORDER BY "+order:"")+(page >=0? " LIMIT "+(page*20)+", "+(page*20+20):""), where);
 
         cursor.moveToFirst();
 
@@ -1134,6 +1135,52 @@ public class MusicDatasource {
         Log.d("statedebug","setMusicState "+res);
 
         close();
+    }
+
+    public void emptyPlaylist(long id) {
+        String where = SQLiteHelper.COLUMN_PLAYLIST_ID + "= ? ";
+        String[] values = new String[]{
+
+                "" + id};
+        try {
+            database.delete(SQLiteHelper.TABLE_PLAYLIST_MUSIC, where,
+                    values);
+        } catch (Exception e) {
+            try {
+                Thread.sleep(200);
+                emptyPlaylist(id);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+
+
+        }
+    }
+
+    public void updatePlaylist(PlaylistItem currentPlaylistItem) {
+
+        ContentValues values = new ContentValues();
+        values.put(SQLiteHelper.COLUMN_NAME, currentPlaylistItem.getName());
+        values.put(SQLiteHelper.COLUMN_TYPE, currentPlaylistItem.getType());
+        values.put(SQLiteHelper.COLUMN_URI, currentPlaylistItem.getUri().toString());
+        values.put(SQLiteHelper.COLUMN_MODIFICATION_DATE, currentPlaylistItem.getModificationDate());
+        String where = SQLiteHelper.COLUMN_ID + " = ?";
+        String [] args = new String[]{
+                currentPlaylistItem.getId()+""
+        };
+        try{
+
+            database.update(SQLiteHelper.TABLE_PLAYLIST,values, where, args);
+        }catch(Exception e){
+            e.printStackTrace();
+            try {
+                Thread.sleep(200);
+                updatePlaylist(currentPlaylistItem);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+
+        }
     }
 /*
     public List<? extends Item> searchMusics(String query, boolean hideRemote) {

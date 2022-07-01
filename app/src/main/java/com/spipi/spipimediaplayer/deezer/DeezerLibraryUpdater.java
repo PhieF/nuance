@@ -271,7 +271,7 @@ public class DeezerLibraryUpdater extends Service {
 					String playlistName = arr.getJSONObject(i).getString("title");
 					MusicDatasource md = new MusicDatasource(this);
 					md.open();
-					long id = md.addPlaylist(playlistName, PlayList.TYPE_DEEZER, null);
+					long id = md.addPlaylist(playlistName, PlayList.TYPE_DEEZER, null, System.currentTimeMillis());
 					md.close();
 					updateDeezerTracks(albumID, id);
 				}

@@ -94,7 +94,7 @@ public class PlaylistsFragment extends GenericFragment implements MyApplication.
                     public void onClick(DialogInterface dialog, int which) {
                         MusicDatasource md = new MusicDatasource(getActivity());
                         md.open();
-                        md.addPlaylist(tv.getText().toString(), PlayList.TYPE_LOCAL, null);
+                        md.addPlaylist(tv.getText().toString(), PlayList.TYPE_LOCAL, null, System.currentTimeMillis());
                         md.close();
                         setItemList();
                     }

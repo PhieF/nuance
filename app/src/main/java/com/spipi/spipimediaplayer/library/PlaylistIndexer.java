@@ -35,7 +35,6 @@ public class PlaylistIndexer {
     }
 
     public void visit(Uri uri){
-        Log.d("PlayListDebug", "visit "+uri.toString());
         RawLister lister = RawListerFactory.getRawListerForUrl(uri);
         try {
             for (FileInfo info : lister.getFileList()){
@@ -43,27 +42,37 @@ public class PlaylistIndexer {
                     visit(info.getUri());
                 }
                 if( info.getExtension().equals("m3u8")) {
-                    Log.d("PlayListDebug", info.getUri().toString());
                     BufferedReader reader = null;
                     try {
                         boolean isIn = false;
+                        PlaylistItem currentPlaylistItem = null;
                         for (PlaylistItem playlistItem: mPlayLists){
                             if(playlistItem.getUri().equals(info.getUri())) {
                                 isIn = true;
+                                currentPlaylistItem = playlistItem;
                                 break;
                             }
                         }
-                        if(isIn)
-                            continue;
+
                         MusicDatasource.getInstance(mContext).open();
 
-                        long id = MusicDatasource.getInstance(mContext).addPlaylist(info.getName(), PlayList.TYPE_LOCAL, info.getUri());
+                        long id = -1;
+                        if(currentPlaylistItem != null) {
+                            if (currentPlaylistItem.getModificationDate() == info.lastModified())
+                                continue;
+                            id = currentPlaylistItem.getId();
+                            MusicDatasource.getInstance(mContext).emptyPlaylist(id);
+                            currentPlaylistItem.setModificationDate(info.lastModified());
+                            MusicDatasource.getInstance(mContext).updatePlaylist(currentPlaylistItem);
+                        }
+                        else {
+                            id = MusicDatasource.getInstance(mContext).addPlaylist(info.getName(), PlayList.TYPE_LOCAL, info.getUri(), info.lastModified());
+                        }
                         reader = new BufferedReader(new InputStreamReader(FileEditorFactory.getFileEditorForUrl(info.getUri(), null).getInputStream()));
 
                         while(reader.ready()) {
                             String line = reader.readLine();
                             Uri music = Uri.withAppendedPath(uri, line);
-                            Log.d("PlayListDebug", "path "+music.toString());
 
                             if(FileInfoFactory.getFileInfoForUrl(music).exists())
                                 MusicDatasource.getInstance(mContext).addToPlaylist(-MediaPlayerFactory.TYPE_LOCAL, music.toString(), id);

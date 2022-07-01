@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.spipi.spipimediaplayer.database.SQLiteHelper;
 import com.spipi.spipimediaplayer.mediaplayer.MediaPlayerService;
 
 import java.util.ArrayList;
@@ -157,20 +158,35 @@ public void setItemList(){
             protected Void doInBackground(Void... voids) {
                 if(getActivity()==null)
                     return null;
-                mMusics = (ArrayList<MusicItem>) mMusicDatasource.getAllMusicsFromPlaylist(mPlaylist, PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("only_local_pref",false));
-                Collections.reverse(mMusics);
+                mMusics = new ArrayList<>();
                 mItems = new ArrayList<Item>();
+
+                int page = 0;
+                while (true){
+                    List<MusicItem> newMusics = mMusicDatasource.getAllMusicsFromPlaylist(mPlaylist, PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("only_local_pref",false), page, SQLiteHelper.COLUMN_ID+" DESC");
+                    if (newMusics.size() == 0)
+                        break;
+                    mMusics.addAll(newMusics);
+                    publishProgress();
+                    page ++;
+                }
 
                 return null;
 
             }
-            @Override
+
+           @Override
+           protected void onProgressUpdate(Void... values) {
+               if(mMusics==null)
+                   return;
+               mAdapter.setItemList(mMusics);
+               mAdapter.setOnMusicClickListener(PlaylistFragment.this);
+               mAdapter.notifyDataSetChanged();
+           }
+
+           @Override
         protected void onPostExecute(Void result){
-                if(mMusics==null)
-                    return;
-                mAdapter.setItemList(mMusics);
-                mAdapter.setOnMusicClickListener(PlaylistFragment.this);
-                        mAdapter.notifyDataSetChanged();
+
             }
         }.execute();
 

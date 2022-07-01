@@ -82,18 +82,20 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 
     public static final String TABLE_PLAYLIST = "playlist";
+    public static String COLUMN_MODIFICATION_DATE= "modification_date";
     private static final String DATABASE_CREATE_PLAYLIST = "create table "
             + TABLE_PLAYLIST + "(" + COLUMN_ID
             + " integer primary key autoincrement, " + COLUMN_NAME
             + " text not null, " + COLUMN_TYPE
-            + " integer not null, " + COLUMN_URI + " text not null);";
+            + " integer not null, " + COLUMN_URI + " text not null, "+COLUMN_MODIFICATION_DATE+" long not null);";
 
 
     public static final String TABLE_PLAYLIST_MUSIC = "playlist_music2";
     public static final String COLUMN_PLAYLIST_ID = "playlist_id";
     public static final String COLUMN_PLAYLIST_MUSIC_PATH = "music_id";
     private static final String DATABASE_CREATE_PLAYLIST_MUSIC_ASSOCIATION = "CREATE TABLE " + TABLE_PLAYLIST_MUSIC + " " +
-            "(" + COLUMN_PLAYLIST_ID + " integer not null," + COLUMN_ACCESS_ID + " INTEGER NOT NULL, " + COLUMN_PLAYLIST_MUSIC_PATH + " TEXT NOT NULL " +
+            "(" + COLUMN_ID
+            + " integer primary key autoincrement, " + COLUMN_PLAYLIST_ID + " integer not null," + COLUMN_ACCESS_ID + " INTEGER NOT NULL, " + COLUMN_PLAYLIST_MUSIC_PATH + " TEXT NOT NULL " +
             ", CONSTRAINT fk_column2 FOREIGN KEY (" + COLUMN_PLAYLIST_ID + ")" +
             " REFERENCES " + TABLE_PLAYLIST + "  (" + COLUMN_ID + ")" +
             "	ON DELETE CASCADE);";

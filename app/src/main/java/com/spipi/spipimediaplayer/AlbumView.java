@@ -170,7 +170,7 @@ public class AlbumView extends LinearLayout implements View.OnClickListener, MyA
                         mAdapter.setMusicList(mAlbumItem, mMusics);
                 }
                 else {
-                    mMusics = (List<MusicItem>) mMusicDatasource.getAllMusicsFromPlaylist((PlaylistItem) mAlbumItem, PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("only_local_pref", false));
+                    mMusics = (List<MusicItem>) mMusicDatasource.getAllMusicsFromPlaylist((PlaylistItem) mAlbumItem, PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("only_local_pref", false), -1, null);
                     Collections.reverse(mMusics);
                 }
 
