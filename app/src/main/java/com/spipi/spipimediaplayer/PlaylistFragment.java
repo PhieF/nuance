@@ -214,9 +214,8 @@ public void setItemList(){
     @Override
     public void onClick(Item item) {
         if(item instanceof MusicItem) {
-            Log.d("musicdebug",((MusicItem)item).getTitle());
-            mMediaPlayerService.setMusicList(mMusics);
-            mMediaPlayerService.setCurrent(mMusics.indexOf(item) );
+            mMediaPlayerService.setMusicList(mMusicsToDisplay);
+            mMediaPlayerService.setCurrent(mMusicsToDisplay.indexOf(item) );
             mMediaPlayerService.prepareAndPlay();
         }
         else{
