@@ -10,13 +10,13 @@ public class PlaylistItem extends ExpandableItem implements Comparable<PlaylistI
     private final String mPicture;
     private String mName;
     private String mThumbnail;
-    private Uri mUri;
+    private String mUri;
 
     public PlaylistItem(String name, String picture, String thumbnail, long id, Uri uri){
         mName = name;
         mThumbnail=thumbnail;
         mPicture=picture;
-        mUri = uri;
+        mUri = uri.toString();
         mId = id;
     }
     public String getName(){
@@ -64,6 +64,6 @@ public class PlaylistItem extends ExpandableItem implements Comparable<PlaylistI
     }
 
     public Uri getUri() {
-        return mUri;
+        return Uri.parse(mUri);
     }
 }
