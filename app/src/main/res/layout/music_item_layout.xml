@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="40dip"
+    android:layout_height="60dip"
     android:orientation="vertical"
     android:background="@drawable/button_selector_holo_dark"
     android:paddingLeft="15dip"
@@ -29,22 +29,41 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-
-    <TextView
-        android:id="@+id/title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:textColor="@android:color/black"
-        android:layout_marginLeft="5dip"
-        android:gravity="center_vertical"
-        android:maxLines="3"
-        android:text="@+id/TextView01"
-        android:textStyle="bold"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/imageView"
         android:layout_toLeftOf="@id/plus"
-        />
+        android:layout_toRightOf="@id/imageView"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="5dip"
+            android:enabled="false"
+            android:maxLines="3"
+            android:text="title"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_centerVertical="false"
+            android:layout_marginLeft="5dip"
+            android:enabled="false"
+            android:maxLines="3"
+            android:text="blabla"
+            android:textColor="@android:color/black"
+            android:textStyle="italic" />
+    </LinearLayout>
+
 
 
 

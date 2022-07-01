@@ -18,6 +18,7 @@ import com.spipi.spipimediaplayer.mediaplayer.MediaPlayerService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A fragment representing a list of Items.
@@ -42,6 +43,8 @@ public class PlaylistFragment extends GenericFragment implements MyApplication.M
     private Drawable mDrawable;
     private Bitmap myBitmap;
     private AsyncTask<Void, Void, Void> mTask;
+    private ArrayList<MusicItem> mMusicsToDisplay;
+    private String mLastQuery = "";
 
 
     // TODO: Rename and change types of parameters
@@ -117,7 +120,6 @@ public class PlaylistFragment extends GenericFragment implements MyApplication.M
             // alpha
             // this will return a number betn 0f and 0.6f
         }
-        // System.out.println(alpha+" "+screenHeight +" "+locationImageInitialLocation+" "+position+" "+diff);
         return alpha;
     }
 @Override
@@ -159,6 +161,7 @@ public void setItemList(){
                 if(getActivity()==null)
                     return null;
                 mMusics = new ArrayList<>();
+                mMusicsToDisplay = new ArrayList<>();
                 mItems = new ArrayList<Item>();
 
                 int page = 0;
@@ -179,9 +182,10 @@ public void setItemList(){
            protected void onProgressUpdate(Void... values) {
                if(mMusics==null)
                    return;
-               mAdapter.setItemList(mMusics);
+               refreshFilter();
                mAdapter.setOnMusicClickListener(PlaylistFragment.this);
-               mAdapter.notifyDataSetChanged();
+
+
            }
 
            @Override
@@ -190,6 +194,19 @@ public void setItemList(){
             }
         }.execute();
 
+
+    }
+
+    private void refreshFilter() {
+
+        mMusicsToDisplay = new ArrayList<>();
+        for(MusicItem musicItem: new ArrayList<MusicItem>(mMusics)){
+            if(musicItem.getAlbumName().toLowerCase().contains(mLastQuery) || musicItem.getArtistName().toLowerCase().contains(mLastQuery) || musicItem.getTitle().toLowerCase().contains(mLastQuery)){
+                mMusicsToDisplay.add(musicItem);
+            }
+        }
+        mAdapter.setItemList(mMusicsToDisplay);
+        mAdapter.notifyDataSetChanged();
 
     }
 
@@ -214,9 +231,15 @@ public void setItemList(){
 
     @Override
     public void onMusicClick(List<MusicItem> musics, int position) {
-         mMediaPlayerService.setMusicList(musics);
+        mMediaPlayerService.setMusicList(musics);
         mMediaPlayerService.setCurrent(position);
         mMediaPlayerService.prepareAndPlay();
+    }
+
+    public boolean handleSearch(String query) {
+        mLastQuery = query.toLowerCase();
+        refreshFilter();
+        return true;
     }
 
 

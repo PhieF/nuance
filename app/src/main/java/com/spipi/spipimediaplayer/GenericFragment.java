@@ -233,4 +233,8 @@ public abstract class GenericFragment extends Fragment implements  ItemAdapter.O
             builder.create().show();
         }
     }
+
+    public boolean handleSearch(String query) {
+        return false;
+    }
 }

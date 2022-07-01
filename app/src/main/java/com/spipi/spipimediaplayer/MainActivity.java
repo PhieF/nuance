@@ -11,8 +11,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
     private SearchFragment searchFragment;
     private String mLastQuery="";
     private PermissionChecker mPermissionChecker;
+    private Fragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
         setFragment(frag, true);
     }
     public void setFragment(Fragment frag, boolean add){
+        mFragment = frag;
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction()                ;
         ft.setCustomAnimations(R.anim.browser_content_enter,
                 R.anim.browser_content_exit, R.anim.browser_content_pop_enter,
@@ -74,21 +78,29 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        Log.d("MainActivity","onCreateOptionsMenu");
         menu.findItem(R.id.action_enable_floating_player).setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(FloatingService.ENABLE_FLOATING_PLAYER, false));
         menu.findItem(R.id.action_enable_low_ram).setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("low_ram",false));
         menu.findItem(R.id.action_only_local).setCheckable(true).setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("only_local_pref", false));
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        /*final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         // Assumes current activity is the searchable activity
         int searchImgId = android.support.v7.appcompat.R.id.search_button; // I used the explicit layout ID of searchview's ImageView
         ImageView v = (ImageView) searchView.findViewById(searchImgId);
         v.setImageResource(R.drawable.ic_menu_search);
         SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
         searchView.setSearchableInfo(info);
+        Log.d("MainActivity","setQuery");
+
         searchView.setQuery("", false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Log.d("MainActivity","onQueryTextSubmit "+query);
+                searchView.clearFocus();
+                if(mFragment != null && mFragment instanceof GenericFragment && ((GenericFragment) mFragment).handleSearch(query)){
+                    return true;
+                }
                 if (searchFragment == null) {
                     SearchFragment fragm = new SearchFragment();
                     setFragment(fragm);
@@ -103,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
-        });*/
+        });
 
 
         return true;

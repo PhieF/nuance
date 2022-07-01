@@ -885,8 +885,7 @@ public class MusicDatasource {
         String [] where = new String[]{playlistItem.getId()+""};
         List<MusicItem> mis = new ArrayList<>();
         open();
-        Cursor cursor = database.rawQuery("SELECT * FROM " + SQLiteHelper.TABLE_PLAYLIST_MUSIC+" WHERE "+SQLiteHelper.COLUMN_PLAYLIST_ID+"=? "+(order != null?" ORDER BY "+order:"")+(page >=0? " LIMIT "+(page*20)+", "+(page*20+20):""), where);
-
+        Cursor cursor = database.rawQuery("SELECT * FROM " + SQLiteHelper.TABLE_PLAYLIST_MUSIC+" WHERE "+SQLiteHelper.COLUMN_PLAYLIST_ID+"=? "+(order != null?" ORDER BY "+order:"")+(page >=0? " LIMIT "+(page*20)+", "+(20):""), where);
         cursor.moveToFirst();
 
         int accessColumn = cursor.getColumnIndex(SQLiteHelper.COLUMN_ACCESS_ID);

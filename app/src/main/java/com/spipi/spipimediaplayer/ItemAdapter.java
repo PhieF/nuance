@@ -87,6 +87,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         private final ImageView mThumbnailView;
         private final AlbumView mAlbumView;
         private final View mPlayButton;
+        private final TextView mSubtitleTextView;
         private Item mItem;
 
         public MyViewHolder(View itemView, ViewGroup viewGroup) {
@@ -127,6 +128,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             else
                 mPlayButton= null;
             mTextView = (TextView)itemView.findViewById(R.id.title);
+            mSubtitleTextView = (TextView)itemView.findViewById(R.id.subtitle);
             mThumbnailView = (ImageView) itemView.findViewById(R.id.picture);
             if(mThumbnailView!=null&&mThumbnailView.getLayoutParams().height<=0) {
                 mThumbnailView.getLayoutParams().height = viewGroup.getWidth() / 3;
@@ -176,6 +178,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         public void setThumbnailVisibility(int thumbnailVisibility) {
             if (mThumbnailView != null)
             mThumbnailView.setVisibility(thumbnailVisibility);
+        }
+
+        public void setSubtitle(String subtitle) {
+            mSubtitleTextView.setText(subtitle);
         }
     }
 
@@ -234,14 +240,15 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         if(mHeader!=null)
             i = i-1;
+        Item item = mList.get(i);
         if(viewHolder.getItemViewType()==TEXT||viewHolder.getItemViewType() == BUTTON){
-            ((TextViewHolder)viewHolder).setText(mList.get(i).getDisplayName());
+            ((TextViewHolder)viewHolder).setText(item.getDisplayName());
             if(viewHolder.getItemViewType() == BUTTON)
-                ((TextViewHolder)viewHolder).setOnClickListener(((ButtonItem)mList.get(i)).getOnClickListener());
+                ((TextViewHolder)viewHolder).setOnClickListener(((ButtonItem)item).getOnClickListener());
             return;
         }
-        ((MyViewHolder)viewHolder).setText(mList.get(i).getDisplayName());
-        if (mList.get(i).getThumbnail() != null && mList.get(i).getThumbnail().length() != 0) {
+        ((MyViewHolder)viewHolder).setText(item.getDisplayName());
+        if (item.getThumbnail() != null && item.getThumbnail().length() != 0) {
 
             Bitmap myBitmap;
             if(PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean("low_ram",false)){
@@ -259,14 +266,15 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         } else
             ((MyViewHolder)viewHolder).setThumbnail(getDefaultResource());
         if(viewHolder.getItemViewType()== ALBUM ) {
-            ((MyViewHolder) viewHolder).setAlbum(mList.get(i), mMusics.get(mList.get(i)));
+            ((MyViewHolder) viewHolder).setAlbum(item, mMusics.get(item));
 
 
         }
         else
-            ((MyViewHolder) viewHolder).setItem(mList.get(i));
+            ((MyViewHolder) viewHolder).setItem(item);
         if(viewHolder.getItemViewType()==MUSIC){
-            ((MyViewHolder)viewHolder).setIsPlaying(mList.get(i).equals(playingMusic));
+            ((MyViewHolder)viewHolder).setIsPlaying(item.equals(playingMusic));
+            ((MyViewHolder)viewHolder).setSubtitle(((MusicItem)item).getArtistName()+" - "+((MusicItem)item).getAlbumName());
         }
 
 
