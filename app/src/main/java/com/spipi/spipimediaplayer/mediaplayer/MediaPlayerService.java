@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -35,6 +37,16 @@ public class MediaPlayerService extends Service implements MediaPlayerListener {
     private List<OnChangeListener> mOnChangeListeners;
     private IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     private boolean mChangeMusic;
+    private PowerManager.WakeLock mWakeLock;
+    private Handler mHandler;
+    private Runnable releaseLockRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if(!isPlaying() && mWakeLock.isHeld()){
+                mWakeLock.release();
+            }
+        }
+    };
 
 
     private class NoisyAudioStreamReceiver extends BroadcastReceiver {
@@ -143,6 +155,10 @@ public class MediaPlayerService extends Service implements MediaPlayerListener {
         if(mgr != null) {
             mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         }
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
+        mHandler = new Handler();
+
 
     }
     public void addOnChangeListener(OnChangeListener listener){
@@ -156,7 +172,14 @@ public class MediaPlayerService extends Service implements MediaPlayerListener {
     public void pause(){
         if(isPlaying())
             mediaPlayer.pause();
+        delayedReleaseWakeLock();
     }
+
+    private void delayedReleaseWakeLock() {
+        mHandler.removeCallbacks(releaseLockRunnable);
+        mHandler.postDelayed(releaseLockRunnable,10000);
+    }
+
     public void next(){
         current++;
         prepareAndPlay();
@@ -166,9 +189,13 @@ public class MediaPlayerService extends Service implements MediaPlayerListener {
         prepareAndPlay();
     }
     public void prepareAndPlay(){
+
         if(mMusicList!=null&&mMusicList.size()>0){
             if(current>=mMusicList.size()|| current<0)
                 current = 0;
+            mHandler.removeCallbacks(releaseLockRunnable);
+            if(!mWakeLock.isHeld())
+                mWakeLock.acquire();
             mChangeMusic=true;
             musicItem = mMusicList.get(current);
             if(mediaPlayer!=null)
@@ -185,8 +212,12 @@ public class MediaPlayerService extends Service implements MediaPlayerListener {
 
     }
     public void play(){
-        if(mediaPlayer!=null)
+        if(mediaPlayer!=null) {
+            mHandler.removeCallbacks(releaseLockRunnable);
+            if(!mWakeLock.isHeld())
+                mWakeLock.acquire();
             mediaPlayer.play();
+        }
     }
     public class LocalBinder extends Binder {
         public MediaPlayerService getService(){
@@ -214,6 +245,7 @@ public class MediaPlayerService extends Service implements MediaPlayerListener {
 
     @Override
     public void onEnd() {
+        delayedReleaseWakeLock();
         notifyListeners();
     }
 
@@ -229,11 +261,13 @@ public class MediaPlayerService extends Service implements MediaPlayerListener {
 
     @Override
     public void onCompletion() {
+        delayedReleaseWakeLock();
         next();
     }
 
     @Override
     public void onError() {
+        delayedReleaseWakeLock();
         notifyListeners();
     }
 }
