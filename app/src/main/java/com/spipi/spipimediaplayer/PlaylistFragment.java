@@ -127,20 +127,8 @@ public void  postOnCreate(View view){
     super.postOnCreate(view);
     if(mPlaylist !=null){
         getActivity().setTitle(mPlaylist.getDisplayName());
-        View header = getActivity().getLayoutInflater().inflate(R.layout.recycler_header, null);
-        if(mPlaylist.getThumbnail()!=null&& mPlaylist.getPicture().length() != 0) {
-            if(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("low_ram",false)){
-                BitmapFactory.Options optionsDec = new BitmapFactory.Options();
-                optionsDec.inSampleSize = 4;
-                myBitmap = BitmapFactory.decodeFile(mPlaylist.getPicture(), optionsDec);
-            }
-            else
-             myBitmap = BitmapFactory.decodeFile(mPlaylist.getPicture());
-            ((ImageView) header.findViewById(R.id.image)).setImageBitmap(myBitmap);
-        }else{
-            ((ImageView) header.findViewById(R.id.image)).setImageResource(R.drawable.unknown_artist);
-        }
-        mAdapter.setHeader(header);
+        mListView.setPadding(0,40,0,0);
+        mAdapter.setHeader(null);
     }
 
 }
