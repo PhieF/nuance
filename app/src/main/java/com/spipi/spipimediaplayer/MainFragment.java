@@ -36,18 +36,25 @@ public class MainFragment extends TabbedFragment {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if(position==0) {
+
+                return  NewMainFragment.newInstance();
+
+            }
+
+
+            else if (position==1) {
+                if(mPlaylistFrag == null)
+                    mPlaylistFrag =  PlaylistsFragment.newInstance();
+                return mPlaylistFrag;
+
+            }
+            else {
                 if(mArtistFrag == null)
                     mArtistFrag =  ArtistFragment.newInstance("", "");
                 return mArtistFrag;
 
             }
 
-            else   {
-                if(mPlaylistFrag == null)
-                    mPlaylistFrag =  PlaylistsFragment.newInstance();
-                return mPlaylistFrag;
-
-            }
 
 
 
@@ -55,8 +62,7 @@ public class MainFragment extends TabbedFragment {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 2;
+            return 3;
         }
 
         @Override
@@ -64,9 +70,11 @@ public class MainFragment extends TabbedFragment {
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_artist).toUpperCase(l);
+                    return getString(R.string.app_name).toUpperCase(l);
                 case 1:
                     return getString(R.string.playlists).toUpperCase(l);
+                case 2:
+                    return getString(R.string.title_artist).toUpperCase(l);
 
             }
             return null;

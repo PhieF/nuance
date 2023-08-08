@@ -52,9 +52,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
         }.start();
 
         setContentView(R.layout.activity_main2);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000ff")));
-        getSupportActionBar().setStackedBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000ff")));
-        getSupportActionBar().setElevation(0);
+        getSupportActionBar().hide();
         mPermissionChecker.checkAndRequestPermission(this, this);
 
     }
@@ -74,52 +72,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
         ft.commitAllowingStateLoss();
 
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        Log.d("MainActivity","onCreateOptionsMenu");
-        menu.findItem(R.id.action_enable_floating_player).setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(FloatingService.ENABLE_FLOATING_PLAYER, false));
-        menu.findItem(R.id.action_enable_low_ram).setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("low_ram",false));
-        menu.findItem(R.id.action_only_local).setCheckable(true).setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("only_local_pref", false));
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
-        // Assumes current activity is the searchable activity
-        int searchImgId = android.support.v7.appcompat.R.id.search_button; // I used the explicit layout ID of searchview's ImageView
-        ImageView v = (ImageView) searchView.findViewById(searchImgId);
-        v.setImageResource(R.drawable.ic_menu_search);
-        SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
-        searchView.setSearchableInfo(info);
-        Log.d("MainActivity","setQuery");
 
-        searchView.setQuery("", false);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Log.d("MainActivity","onQueryTextSubmit "+query);
-                searchView.clearFocus();
-                if(mFragment != null && mFragment instanceof GenericFragment && ((GenericFragment) mFragment).handleSearch(query)){
-                    return true;
-                }
-                if (searchFragment == null) {
-                    SearchFragment fragm = new SearchFragment();
-                    setFragment(fragm);
-                }
-                else if(searchFragment!=null)
-                    searchFragment.doMySearch(searchView.getQuery().toString());
-                mLastQuery = searchView.getQuery().toString();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
-
-        return true;
-    }
     @Override
     public void onBackPressed(){
         if(getSupportFragmentManager().getBackStackEntryCount()>0){
@@ -225,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
     @Override
     public void onPermissionResult(boolean granted) {
         if(granted){
-            MainFragment art = new MainFragment();
+            NewMainFragment art = new NewMainFragment();
             setFragment(art, false);
             ((MyApplication)getApplication()).bindToDeezerUpdateService(this);
             ((MyApplication)getApplication()).bindToMp3Service(this);

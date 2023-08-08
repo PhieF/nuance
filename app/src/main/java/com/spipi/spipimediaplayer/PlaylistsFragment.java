@@ -188,6 +188,7 @@ public void  postOnCreate(View view){
         }
         mAdapter.setHeader(header);
     }
+    mAdapter.setHeader(null);
 
 }
 

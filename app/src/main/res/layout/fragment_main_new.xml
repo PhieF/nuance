@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/myToolbar" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+
+        android:text="@string/your_music" />
+
+    <LinearLayout
+        android:id="@+id/favorites_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/favori"></ImageView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:textAlignment="center"
+            android:gravity="center_vertical"
+            android:text="@string/favorites"
+            android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/playlists_button"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        >
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/playlist"></ImageView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:textAlignment="center"
+            android:gravity="center_vertical"
+            android:text="@string/playlists"
+            android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/local_library_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/artists_button"
+        android:orientation="horizontal"
+        >
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/artist"></ImageView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:textAlignment="center"
+            android:gravity="center_vertical"
+            android:text="@string/title_artist"
+            android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:id="@+id/albums_button"
+        android:orientation="horizontal"
+        >
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/album"></ImageView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:textAlignment="center"
+            android:gravity="center_vertical"
+            android:text="@string/title_albums"
+            android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+    </LinearLayout>
+</LinearLayout>
+</LinearLayout>
