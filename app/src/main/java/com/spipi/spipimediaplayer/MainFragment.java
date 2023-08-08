@@ -42,17 +42,13 @@ public class MainFragment extends TabbedFragment {
 
             }
 
-            else if(position==1)  {
-                if(mAlbumFrag == null)
-                    mAlbumFrag =  AlbumsFragment.newInstance(null);
-                return mAlbumFrag;
-
-            }
-            else{
+            else   {
                 if(mPlaylistFrag == null)
                     mPlaylistFrag =  PlaylistsFragment.newInstance();
                 return mPlaylistFrag;
+
             }
+
 
 
         }
@@ -60,7 +56,7 @@ public class MainFragment extends TabbedFragment {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
@@ -70,8 +66,6 @@ public class MainFragment extends TabbedFragment {
                 case 0:
                     return getString(R.string.title_artist).toUpperCase(l);
                 case 1:
-                    return getString(R.string.title_albums).toUpperCase(l);
-                case 2:
                     return getString(R.string.playlists).toUpperCase(l);
 
             }
