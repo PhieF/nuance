@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by alexandre on 28/05/15.
@@ -26,6 +28,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private final int BUTTON=7;
     private final int PLAYLIST = 6;
     private List<Item> mList;
+    private List<Item> mFilteredList;
     private Activity mContext;
     private int mLayout;
     private OnItemClickListener mOnItemClickListener;
@@ -40,7 +43,8 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         mContext = context;
         mMusics = new HashMap<>();
         mLayout = R.layout.grid_item_layout;
-        mList = new ArrayList<Item>();
+        mList = new ArrayList<>();
+        mFilteredList = new ArrayList<>();
     }
     public void setItemList(List<? extends Item> list){
         for(Item item : list){
@@ -51,7 +55,9 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             }
         }
         mList.clear();
+        mFilteredList.clear();
         mList.addAll(list);
+        mFilteredList.addAll(list);
     }
 
     public void setOnItemClickListener(OnItemClickListener genericFragment) {
@@ -73,6 +79,20 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public void setPlayingMusic(MusicItem playingMusic) {
         this.playingMusic = playingMusic;
 
+    }
+
+    public void filter(String query) {
+        mFilteredList.clear();
+        mFilteredList.addAll(mList);
+        for(Item item: mList){
+            if(item instanceof MusicItem){
+                MusicItem musicItem = (MusicItem) item;
+                if(!musicItem.getAlbumName().toLowerCase().contains(query.toLowerCase()) && !musicItem.getArtistName().toLowerCase().contains(query.toLowerCase()) && !musicItem.getTitle().toLowerCase().contains(query.toLowerCase())){
+                    mFilteredList.remove(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
     public interface OnItemClickListener{
@@ -101,6 +121,13 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     @Override
                     public void onClick(View view) {
                         mOnItemClickListener.onClick(mItem);
+                    }
+                });
+                click.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        mOnItemLongClickListener.onLongClick(mItem, null);
+                        return true;
                     }
                 });
             }
@@ -240,7 +267,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         if(mHeader!=null)
             i = i-1;
-        Item item = mList.get(i);
+        Item item = mFilteredList.get(i);
         if(viewHolder.getItemViewType()==TEXT||viewHolder.getItemViewType() == BUTTON){
             ((TextViewHolder)viewHolder).setText(item.getDisplayName());
             if(viewHolder.getItemViewType() == BUTTON)
@@ -254,10 +281,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             if(PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean("low_ram",false)){
                 BitmapFactory.Options optionsDec = new BitmapFactory.Options();
                 optionsDec.inSampleSize = 4;
-                myBitmap = BitmapFactory.decodeFile(mList.get(i).getThumbnail(), optionsDec);
+                myBitmap = BitmapFactory.decodeFile(mFilteredList.get(i).getThumbnail(), optionsDec);
             }
             else
-                myBitmap = BitmapFactory.decodeFile(mList.get(i).getThumbnail());
+                myBitmap = BitmapFactory.decodeFile(mFilteredList.get(i).getThumbnail());
             if(myBitmap!=null)
                 ((MyViewHolder)viewHolder).setThumbnail(myBitmap);
             else
@@ -288,7 +315,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public int getItemCount() {
-        return mList.size()+(mHeader!=null?1:0);
+        return mFilteredList.size()+(mHeader!=null?1:0);
     }
     @Override
     public int getItemViewType(int position){
@@ -296,18 +323,18 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             return HEADER;
         if(mHeader!=null)
             position--;
-        if(mList.get(position) instanceof ArtistItem){
+        if(mFilteredList.get(position) instanceof ArtistItem){
             return ARTIST;
         }
-        else if (mList.get(position) instanceof AlbumItem){
+        else if (mFilteredList.get(position) instanceof AlbumItem){
             return ALBUM;
         }
-        else if (mList.get(position) instanceof PlaylistItem)
+        else if (mFilteredList.get(position) instanceof PlaylistItem)
             return PLAYLIST;
-        else if (mList.get(position) instanceof TextItem){
+        else if (mFilteredList.get(position) instanceof TextItem){
             return TEXT;
         }
-        else if (mList.get(position) instanceof ButtonItem){
+        else if (mFilteredList.get(position) instanceof ButtonItem){
             return BUTTON;
         }
         else

@@ -127,7 +127,6 @@ public void  postOnCreate(View view){
     super.postOnCreate(view);
     if(mPlaylist !=null){
         getActivity().setTitle(mPlaylist.getDisplayName());
-        mListView.setPadding(0,40,0,0);
         mAdapter.setHeader(null);
     }
 

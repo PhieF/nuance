@@ -107,4 +107,17 @@ public abstract class FileInfo implements Serializable , Comparable {
         }
         return 0;
     }
+
+    public Uri withAppendedName(String dirname) {
+        return Uri.withAppendedPath(getUri(),dirname);
+    }
+
+    public FileInfo getParent() {
+        ;
+        try {
+            return FileInfoFactory.getFileInfoForUrl(Uri.parse(getUri().toString().substring(0,getUri().toString().lastIndexOf("/"))));
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

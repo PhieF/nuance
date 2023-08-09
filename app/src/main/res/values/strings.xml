@@ -77,6 +77,9 @@
     <string name="local_library_title">Local Library</string>
     <string name="your_music">Your Music</string>
     <string name="favorites">Favorites</string>
+    <string name="import_playlist">Import playlist</string>
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
 
 
 </resources>

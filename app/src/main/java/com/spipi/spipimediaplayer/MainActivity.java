@@ -1,23 +1,13 @@
 package com.spipi.spipimediaplayer;
 
 import android.annotation.TargetApi;
-import android.app.SearchManager;
-import android.app.SearchableInfo;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.connect.SessionStore;
@@ -25,9 +15,14 @@ import com.spipi.spipimediaplayer.deezer.DeezerHelpActivity;
 import com.spipi.spipimediaplayer.deezer.DeezerLibraryUpdater;
 import com.spipi.spipimediaplayer.deezer.DeezerWrapper;
 import com.spipi.spipimediaplayer.hubic.hubicLibraryUpdate;
+import com.spipi.spipimediaplayer.library.FileInfo;
 import com.spipi.spipimediaplayer.library.PlaylistIndexer;
 import com.spipi.spipimediaplayer.mediaplayer.FloatingService;
 import com.spipi.spipimediaplayer.mediaplayer.MediaPlayerService;
+import com.spipi.spipimediaplayer.playlists.PlayListConverter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class MainActivity extends AppCompatActivity implements MyApplication.CoverServiceBindListener, MyApplication.DeezerUpdateServiceBindListener, MyApplication.Mp3ServiceBindListener, PermissionChecker.PermissionListener {
@@ -54,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Cov
         setContentView(R.layout.activity_main2);
         getSupportActionBar().hide();
         mPermissionChecker.checkAndRequestPermission(this, this);
-
     }
     public void setFragment(Fragment frag){
         setFragment(frag, true);

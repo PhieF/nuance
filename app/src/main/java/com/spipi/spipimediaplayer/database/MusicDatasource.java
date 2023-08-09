@@ -1181,6 +1181,29 @@ public class MusicDatasource {
 
         }
     }
+
+    public void removePlaylist(long id) {
+        Log.d("playlistdebug","removing "+id);
+
+        emptyPlaylist(id);
+        String where = SQLiteHelper.COLUMN_ID + " = ?";
+        String [] args = new String[]{
+                id+""
+        };
+        try{
+
+            database.delete(SQLiteHelper.TABLE_PLAYLIST, where, args);
+        }catch(Exception e){
+            e.printStackTrace();
+            try {
+                Thread.sleep(200);
+                removePlaylist(id);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+
+        }
+    }
 /*
     public List<? extends Item> searchMusics(String query, boolean hideRemote) {
         List<MusicItem> comments = new ArrayList<MusicItem>();

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,12 +20,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.spipi.spipimediaplayer.database.MusicDatasource;
+import com.spipi.spipimediaplayer.library.FileInfo;
+import com.spipi.spipimediaplayer.mediaplayer.MediaPlayerFactory;
 import com.spipi.spipimediaplayer.mediaplayer.MediaPlayerService;
 import com.spipi.spipimediaplayer.playlists.PlayList;
+import com.spipi.spipimediaplayer.playlists.PlayListConverter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -171,25 +177,8 @@ public class PlaylistsFragment extends GenericFragment implements MyApplication.
 @Override
 public void  postOnCreate(View view){
     super.postOnCreate(view);
-    if(mArtist!=null){
-        getActivity().setTitle(mArtist.getDisplayName());
-        View header = getActivity().getLayoutInflater().inflate(R.layout.recycler_header, null);
-        if(mArtist.getThumbnail()!=null&&!mArtist.getPicture().isEmpty()) {
-            if(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("low_ram",false)){
-                BitmapFactory.Options optionsDec = new BitmapFactory.Options();
-                optionsDec.inSampleSize = 4;
-                myBitmap = BitmapFactory.decodeFile(mArtist.getPicture(), optionsDec);
-            }
-            else
-             myBitmap = BitmapFactory.decodeFile(mArtist.getPicture());
-            ((ImageView) header.findViewById(R.id.image)).setImageBitmap(myBitmap);
-        }else{
-            ((ImageView) header.findViewById(R.id.image)).setImageResource(R.drawable.unknown_artist);
-        }
-        mAdapter.setHeader(header);
-    }
     mAdapter.setHeader(null);
-
+    mToolbar.setTitle(R.string.playlists);
 }
 
 
@@ -204,13 +193,27 @@ public void setItemList(){
             @Override
             protected Void doInBackground(Void... voids) {
 
-                mAlbums =  new ArrayList<Item>(mMusicDatasource.getAllPlaylists(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("only_local_pref", false)));
+                mAlbums = new ArrayList<>();
                 mAlbums.add(new ButtonItem(getString(R.string.add_playlist), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         newPlaylist();
                     }
                 }));
+                mAlbums.add(new ButtonItem(getString(R.string.import_playlist), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FilePickerDialog directoryChooserDialog = new FilePickerDialog(getActivity(), new FilePickerDialog.FilePickerListener() {
+                            @Override
+                            public void onChosenDir(FileInfo chosenFile) {
+                                PlayListConverter.importFromFile(getActivity(), chosenFile.getUri(),null);
+
+                            }
+                        }, false, new ArrayList<>(Arrays.asList("m3u8")));
+                        directoryChooserDialog.chooseDirectory();
+                    }
+                }));
+                mAlbums.addAll(new ArrayList<Item>(mMusicDatasource.getAllPlaylists(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("only_local_pref", false))));
                 mItems = new ArrayList<Item>();
 
                 return null;
@@ -220,7 +223,7 @@ public void setItemList(){
         protected void onPostExecute(Void result){
                 mAdapter.setItemList(mAlbums);
                 mAdapter.setOnMusicClickListener(PlaylistsFragment.this);
-                        mAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
             }
         }.execute();
 
@@ -245,5 +248,29 @@ public void setItemList(){
          mMediaPlayerService.setMusicList(musics);
         mMediaPlayerService.setCurrent(position);
         mMediaPlayerService.prepareAndPlay();
+    }
+
+    @Override
+    public void onLongClick(final Item item, AlbumView albumView) {
+        if(!(item instanceof PlaylistItem))
+            return;
+        PlaylistItem playlistItem = (PlaylistItem) item;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(playlistItem.getName());
+        builder.setItems(getActivity().getResources().getStringArray(R.array.playlist_actions), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d("playlistdebug","dialog "+which);
+                switch (which){
+                    case 0:
+                        MusicDatasource.getInstance(getContext()).open();
+                        MusicDatasource.getInstance(getContext()).removePlaylist(playlistItem.getId());
+                        MusicDatasource.getInstance(getContext()).close();
+                        setItemList();
+                }
+
+            }
+        });
+        builder.create().show();
     }
 }
